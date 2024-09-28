@@ -10,10 +10,10 @@
 ## Estrutura BackEnd
 
 ## EndPoints Back End
- <img src="../BackEnd/src/assets/EstrturaProjeto.png" >
+ <img src="./src/assets/EstrturaProjeto.png" >
 
  ## Dependências instaladas
- <img src="../BackEnd/src/assets/InstallDepend.png" >
+ <img src="./assets/InstallDepend.png" >
 <br>
 Para o projeto rode corretamenta em sua maquina localhost, instale as Dependências com o comando <br>
 npm install
