@@ -17,6 +17,9 @@ const authRoutes = require('./Routes/authRoutes');
 const authMiddleware = require('./middleware/authMiddleware');
 const roleMiddleware = require('./middleware/roleMiddleware');
 
+// Conectar ao banco de dados
+require('./config/db');
+
 // Inicializar o aplicativo Express
 const app = express();
 
@@ -24,8 +27,6 @@ const app = express();
 require('dotenv').config();
 
 
-// Conectar ao banco de dados
-require('./config/db');
 
 // Middleware para logging de requisições
 app.use(morgan('dev'));
