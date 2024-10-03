@@ -1,14 +1,14 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "engines": {
     "node": ">=14.17.0"
   },
   "scripts": {
-    "test": "node src/index.js",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "test": "node src/app.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
