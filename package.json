@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "app.js",
   "engines": {
-    "node": "20.x"
+    "node": "18.x"
   },
   "scripts": {
     "test": "node src/app.js",
-    "start": "node src/app.js",
+    "start": "pm2 start src/app.js --name 'backend-app' --time",
     "dev": "nodemon src/app.js"
   },
   "keywords": [],
@@ -23,7 +23,6 @@
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "mysql2": "^3.11.0",
     "node-cron": "^3.0.3",
     "pg": "^8.13.0",
     "pg-hstore": "^2.3.4",
