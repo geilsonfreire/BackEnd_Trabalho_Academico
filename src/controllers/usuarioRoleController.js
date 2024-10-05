@@ -1,3 +1,4 @@
+// Importar models
 const { UsuarioRole, Usuario, Role } = require('../models');
 const { validationResult } = require('express-validator');
 const usuarioRoleValidation = require('../validations/usuarioRoleValidation');
@@ -27,6 +28,7 @@ exports.associateUsuarioRole = [
             const usuarioRole = await UsuarioRole.create({ id_usuario, id_role });
             res.status(201).json(usuarioRole);
         } catch (error) {
+            console.error('Erro ao associar usuário e role:', error);
             res.status(500).json({ error: 'Erro ao associar usuário e role.', message: error.message });
         }
     }
@@ -38,12 +40,15 @@ exports.getRolesByUsuario = async (req, res) => {
         const roles = await UsuarioRole.findAll({
             where: { id_usuario: req.params.id_usuario },
         });
+
         if (roles.length === 0) {
             return res.status(404).json({ message: 'Nenhum role encontrado para este usuário.' });
         }
+
         res.status(200).json(roles);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error('Erro ao obter roles do usuário:', error);
+        res.status(500).json({ error: 'Erro ao obter roles do usuário.', message: error.message });
     }
 };
 
@@ -71,8 +76,9 @@ exports.deleteUsuarioRole = [
 
             // Remover a associação
             await usuarioRole.destroy();
-            res.status(204).json(); // Sem conteúdo
+            res.status(204).send(); // Sem conteúdo
         } catch (error) {
+            console.error('Erro ao remover associação:', error);
             res.status(500).json({ error: 'Erro ao remover associação.', message: error.message });
         }
     }

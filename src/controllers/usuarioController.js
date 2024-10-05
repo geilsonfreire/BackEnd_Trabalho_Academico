@@ -1,18 +1,13 @@
 // Import bibliotecas 
 const bcrypt = require('bcrypt');
-
-// Importar models
 const { Usuario, UsuarioRole, Role } = require('../models');
-
-// Importar validações
 const { validationResult } = require('express-validator');
 const usuarioValidation = require('../validations/usuarioValidation');
 
 // Função para criptografar a senha
 const hashSenha = async (senha) => {
     const saltRounds = 10;
-    const hashedSenha = await bcrypt.hash(senha, saltRounds);
-    return hashedSenha;
+    return await bcrypt.hash(senha, saltRounds);
 };
 
 exports.createUsuario = [
@@ -33,78 +28,67 @@ exports.createUsuario = [
                 ...req.body,
                 senha: senhaCriptografada
             });
-            
-            // Verificar se o id_role está presente
+
+            // Criar a associação na tabela UsuarioRole, se o id_role estiver presente
             if (req.body.id_role) {
-                // Criar a associação na tabela UsuarioRole
                 await UsuarioRole.create({
                     id_usuario: usuario.id_usuario,
                     id_role: req.body.id_role
                 });
             }
-           
 
             res.status(201).json(usuario);
         } catch (error) {
             console.error('Erro ao criar usuário:', error);
-            res.status(400).json({ error: 'Erro ao criar usuário.', message: error.message });
+            res.status(500).json({ error: 'Erro ao criar usuário.', message: error.message });
         }
     }
 ];
-
 
 // Função para obter todos os usuários com seus papéis (roles)
 exports.getUsuarios = async (req, res) => {
     try {
         const usuarios = await Usuario.findAll({
-            include: [
-                {
-                    model: Role,
-                    as: 'roles', // Nome do relacionamento definido no modelo
-                    attributes: ['nome'] // Campos que deseja incluir da tabela Role
-                }
-            ]
+            include: [{
+                model: Role,
+                as: 'roles',
+                attributes: ['nome']
+            }]
         });
 
-        // Formatando a resposta para incluir apenas o array de nomes dos papéis
         const usuariosComRoles = usuarios.map(usuario => ({
             id: usuario.id_usuario,
             nome: usuario.nome,
             email: usuario.email,
-            senha: usuario.senha,
             status: usuario.status,
-            roles: usuario.roles.map(role => role.nome) // Obtendo apenas o nome dos papéis
+            roles: usuario.roles.map(role => role.nome)
         }));
 
         res.status(200).json(usuariosComRoles);
     } catch (error) {
         console.error('Erro ao obter usuários:', error);
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ error: 'Erro ao obter usuários.', message: error.message });
     }
 };
 
-// Verificar se há erros de validação
+// Função para obter um usuário pelo ID
 exports.getUsuarioById = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id, {
-            include: [
-                {
-                    model: Role,
-                    as: 'roles', // Nome do relacionamento definido no modelo
-                    attributes: ['nome'] // Campos que deseja incluir da tabela Role
-                }
-            ]
+            include: [{
+                model: Role,
+                as: 'roles',
+                attributes: ['nome']
+            }]
         });
 
         if (usuario) {
-            // Formatando a resposta para incluir apenas o array de nomes dos papéis
             const usuarioComRoles = {
                 id: usuario.id_usuario,
                 nome: usuario.nome,
                 email: usuario.email,
-                senha: usuario.senha,
                 status: usuario.status,
-                roles: usuario.roles.map(role => role.nome) // Obtendo apenas o nome dos papéis
+                roles: usuario.roles.map(role => role.nome)
             };
 
             res.status(200).json(usuarioComRoles);
@@ -113,10 +97,9 @@ exports.getUsuarioById = async (req, res) => {
         }
     } catch (error) {
         console.error('Erro ao obter usuário:', error);
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ error: 'Erro ao obter usuário.', message: error.message });
     }
 };
-
 
 // Função para atualizar um usuário
 exports.updateUsuario = [
@@ -131,85 +114,71 @@ exports.updateUsuario = [
 
             // Encontrar o usuário
             const usuario = await Usuario.findByPk(req.params.id);
-            if (usuario) {
-                // Se a senha estiver presente na requisição, criptografar antes de atualizar
-                if (req.body.senha) {
-                    req.body.senha = await hashSenha(req.body.senha);
-                }
-
-                // Atualizar os dados do usuário
-                await usuario.update({
-                    nome: req.body.nome,
-                    email: req.body.email,
-                    senha: req.body.senha,
-                    status: req.body.status,
-                });
-
-                // Atualizar os papéis do usuário
-                if (req.body.roles) {
-                    // Primeiro, removemos todos os papéis atuais do usuário
-                    await UsuarioRole.destroy({ where: { id_usuario: usuario.id_usuario } });
-
-                    // Em seguida, adicionamos os novos papéis
-                    // Verificar se `req.body.roles` é um array de IDs
-                    const rolesToAdd = req.body.roles.map(roleId => ({
-                        id_usuario: usuario.id_usuario,
-                        id_role: roleId // Certifique-se de que isso está mapeando corretamente para os IDs
-                    }));
-
-                    // Adicionar os novos papéis, se houver
-                    if (rolesToAdd.length > 0) {
-                        await UsuarioRole.bulkCreate(rolesToAdd);
-                    } else {
-                        console.log('Nenhum papel a ser adicionado.');
-                    }
-                }
-
-                // Buscar e retornar o usuário atualizado
-                const updatedUser = await Usuario.findByPk(req.params.id, {
-                    include: [
-                        {
-                            model: Role,
-                            as: 'roles',
-                            attributes: ['nome']
-                        }
-                    ]
-                });
-
-                // Formatando a resposta para incluir apenas o array de nomes dos papéis
-                const usuarioComRoles = {
-                    id: updatedUser.id_usuario,
-                    nome: updatedUser.nome,
-                    email: updatedUser.email,
-                    senha: updatedUser.senha,
-                    status: updatedUser.status,
-                    roles: updatedUser.roles.map(role => role.nome) // Obtendo apenas o nome dos papéis
-                };
-
-                res.status(200).json(usuarioComRoles);
-            } else {
-                res.status(404).json({ error: 'Usuário não encontrado' });
+            if (!usuario) {
+                return res.status(404).json({ error: 'Usuário não encontrado' });
             }
+
+            // Se a senha estiver presente na requisição, criptografar antes de atualizar
+            if (req.body.senha) {
+                req.body.senha = await hashSenha(req.body.senha);
+            }
+
+            // Atualizar os dados do usuário
+            await usuario.update(req.body);
+
+            // Atualizar os papéis do usuário
+            if (req.body.roles) {
+                // Remover todos os papéis atuais do usuário
+                await UsuarioRole.destroy({ where: { id_usuario: usuario.id_usuario } });
+
+                // Adicionar os novos papéis
+                const rolesToAdd = req.body.roles.map(roleId => ({
+                    id_usuario: usuario.id_usuario,
+                    id_role: roleId
+                }));
+
+                if (rolesToAdd.length > 0) {
+                    await UsuarioRole.bulkCreate(rolesToAdd);
+                }
+            }
+
+            // Buscar e retornar o usuário atualizado
+            const updatedUser = await Usuario.findByPk(req.params.id, {
+                include: [{
+                    model: Role,
+                    as: 'roles',
+                    attributes: ['nome']
+                }]
+            });
+
+            const usuarioComRoles = {
+                id: updatedUser.id_usuario,
+                nome: updatedUser.nome,
+                email: updatedUser.email,
+                status: updatedUser.status,
+                roles: updatedUser.roles.map(role => role.nome)
+            };
+
+            res.status(200).json(usuarioComRoles);
         } catch (error) {
             console.error('Erro ao atualizar usuário:', error);
-            res.status(400).json({ error: error.message });
+            res.status(500).json({ error: 'Erro ao atualizar usuário.', message: error.message });
         }
     }
 ];
-
 
 // Função para deletar um usuário
 exports.deleteUsuario = async (req, res) => {
     try {
         const usuario = await Usuario.findByPk(req.params.id);
-        if (usuario) {
-            await usuario.destroy();
-            res.status(204).json();
-        } else {
-            res.status(404).json({ error: 'Usuário não encontrado' });
+        if (!usuario) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
         }
+
+        await usuario.destroy();
+        res.status(204).send();
     } catch (error) {
         console.error('Erro ao deletar usuário:', error);
-        res.status(400).json({ error: error.message });
+        res.status(500).json({ error: 'Erro ao deletar usuário.', message: error.message });
     }
 };

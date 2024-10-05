@@ -1,8 +1,14 @@
 const roleMiddleware = (requiredRole) => {
     return (req, res, next) => {
-        const { roles } = req.user;
+        const { roles } = req.user || {}; // Garante que req.user existe
 
-        if (!roles || !roles.includes(requiredRole)) {
+        // Verifica se as roles do usuário estão definidas
+        if (!roles || !Array.isArray(roles)) {
+            return res.status(403).json({ error: 'Acesso negado. Permissão insuficiente.' });
+        }
+
+        // Verifica se o usuário possui a role necessária
+        if (!roles.includes(requiredRole)) {
             return res.status(403).json({ error: 'Acesso negado. Permissão insuficiente.' });
         }
 

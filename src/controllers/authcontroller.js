@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const { Usuario, Role } = require('../models');
 const { Op } = require('sequelize');
 
-
 // Função para verificar a senha
 const verificarSenha = async (senhaInserida, senhaArmazenada) => {
     return bcrypt.compare(senhaInserida, senhaArmazenada);
@@ -34,7 +33,6 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'Usuário não encontrado.' });
         }
-        
 
         // Verificar se a senha é válida
         const isPasswordValid = await verificarSenha(senha, user.senha);
@@ -44,13 +42,13 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Senha inválida.' });
         }
 
-        // Gerar o token jwt
+        // Gerar o token JWT
         const roles = user.roles.map(role => role.nome);
         const token = jwt.sign(
-            { 
-                id_usuario: user.id_usuario, 
-                email: user.email, 
-                roles 
+            {
+                id_usuario: user.id_usuario,
+                email: user.email,
+                roles
             },
             process.env.SECRET,
             { expiresIn: '1h' }
@@ -59,16 +57,16 @@ exports.login = async (req, res) => {
         // Retornar token e dados do usuário
         return res.status(200).json({
             message: 'Usuário autenticado',
-            token: token,
+            token,
             user: {
-                id: user.id_usuario,    
+                id: user.id_usuario,
                 email: user.email,
-                roles: roles 
+                roles
             }
         });
     } catch (error) {
         console.error('Erro ao autenticar o usuário:', error.message, error.stack);
-        res.status(500).json({ message: 'Erro ao autenticar o usuário', error: error.message });
+        return res.status(500).json({ message: 'Erro ao autenticar o usuário', error: 'Erro interno do servidor' });
     }
 };
 
@@ -77,14 +75,15 @@ exports.checkAuth = async (req, res) => {
     try {
         // Verificar se o token está presente no cabeçalho
         const token = req.headers.authorization?.split(' ')[1];
-        if (!token) 
+        if (!token)
             return res.status(401).json({ isAuthenticated: false });
+
         // Verificar se o token é válido
         const decoded = jwt.verify(token, process.env.SECRET);
-        res.status(200).json({ isAuthenticated: true, decoded });
+        return res.status(200).json({ isAuthenticated: true, decoded });
     } catch (error) {
-        console.log('Erro ao verificar o token:', error);
-        res.status(401).json({ isAuthenticated: false, message: 'Token inválido ou expirado' });
+        console.error('Erro ao verificar o token:', error);
+        return res.status(401).json({ isAuthenticated: false, message: 'Token inválido ou expirado' });
     }
 };
 
@@ -93,10 +92,12 @@ exports.getUser = async (req, res) => {
     try {
         // Verificar se o token está presente no cabeçalho
         const token = req.headers.authorization?.split(' ')[1];
-        if (!token) 
+        if (!token)
             return res.status(401).json({ message: 'Token não encontrado' });
+
         // Verificar se o token é válido
         const decoded = jwt.verify(token, process.env.SECRET);
+
         // Obter as informações do usuário
         const user = await Usuario.findByPk(decoded.id_usuario, {
             include: {
@@ -107,12 +108,12 @@ exports.getUser = async (req, res) => {
             }
         });
 
-        if (!user) 
+        if (!user)
             return res.status(404).json({ error: 'Usuário não encontrado.' });
 
-        res.status(200).json(user);
+        return res.status(200).json(user);
     } catch (error) {
-        console.log('Erro ao obter informações do usuário:', error);
-        res.status(401).json({ message: 'Token inválido' });
+        console.error('Erro ao obter informações do usuário:', error);
+        return res.status(401).json({ message: 'Token inválido' });
     }
 };

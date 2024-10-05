@@ -1,7 +1,6 @@
 const { MovimentacaoEstoque } = require('../models');
 const { validationResult } = require('express-validator');
-const movimentacaoEstoqueValidation = require('../Validations/movimentacaoEstoqueValidation');
-const Sequelize = require('sequelize');
+const movimentacaoEstoqueValidation = require('../validations/movimentacaoEstoqueValidation');
 
 exports.createMovimentacaoEstoque = [
     movimentacaoEstoqueValidation,
@@ -17,7 +16,8 @@ exports.createMovimentacaoEstoque = [
             const movimentacao = await MovimentacaoEstoque.create(req.body);
             res.status(201).json(movimentacao);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Erro ao criar movimentação de estoque:', error);
+            res.status(500).json({ error: 'Erro ao criar movimentação de estoque.', message: error.message });
         }
     }
 ];
@@ -27,7 +27,8 @@ exports.getMovimentacoesEstoque = async (req, res) => {
         const movimentacoes = await MovimentacaoEstoque.findAll();
         res.status(200).json(movimentacoes);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao buscar movimentações de estoque:', error);
+        res.status(500).json({ error: 'Erro ao buscar movimentações de estoque.', message: error.message });
     }
 };
 
@@ -40,7 +41,8 @@ exports.getMovimentacaoEstoqueById = async (req, res) => {
             res.status(404).json({ error: 'Movimentação não encontrada' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao buscar movimentação de estoque:', error);
+        res.status(500).json({ error: 'Erro ao buscar movimentação de estoque.', message: error.message });
     }
 };
 
@@ -62,7 +64,8 @@ exports.updateMovimentacaoEstoque = [
                 res.status(404).json({ error: 'Movimentação não encontrada' });
             }
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Erro ao atualizar movimentação de estoque:', error);
+            res.status(500).json({ error: 'Erro ao atualizar movimentação de estoque.', message: error.message });
         }
     }
 ];
@@ -72,11 +75,12 @@ exports.deleteMovimentacaoEstoque = async (req, res) => {
         const movimentacao = await MovimentacaoEstoque.findByPk(req.params.id);
         if (movimentacao) {
             await movimentacao.destroy();
-            res.status(204).json();
+            res.status(204).send(); // Enviar uma resposta sem conteúdo
         } else {
             res.status(404).json({ error: 'Movimentação não encontrada' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao deletar movimentação de estoque:', error);
+        res.status(500).json({ error: 'Erro ao deletar movimentação de estoque.', message: error.message });
     }
 };

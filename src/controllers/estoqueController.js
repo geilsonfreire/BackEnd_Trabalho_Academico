@@ -16,7 +16,8 @@ exports.createEstoque = [
             const estoque = await Estoque.create(req.body);
             res.status(201).json(estoque);
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Erro ao criar estoque:', error);
+            res.status(500).json({ error: 'Erro ao criar estoque.', message: error.message });
         }
     }
 ];
@@ -26,7 +27,8 @@ exports.getEstoques = async (req, res) => {
         const estoques = await Estoque.findAll();
         res.status(200).json(estoques);
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao buscar estoques:', error);
+        res.status(500).json({ error: 'Erro ao buscar estoques.', message: error.message });
     }
 };
 
@@ -36,10 +38,11 @@ exports.getEstoqueById = async (req, res) => {
         if (estoque) {
             res.status(200).json(estoque);
         } else {
-            res.status(404).json({ error: 'Estoque não encontrado' });
+            res.status(404).json({ error: 'Estoque não encontrado.' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao buscar estoque:', error);
+        res.status(500).json({ error: 'Erro ao buscar estoque.', message: error.message });
     }
 };
 
@@ -58,10 +61,11 @@ exports.updateEstoque = [
                 await estoque.update(req.body);
                 res.status(200).json(estoque);
             } else {
-                res.status(404).json({ error: 'Estoque não encontrado' });
+                res.status(404).json({ error: 'Estoque não encontrado.' });
             }
         } catch (error) {
-            res.status(400).json({ error: error.message });
+            console.error('Erro ao atualizar estoque:', error);
+            res.status(500).json({ error: 'Erro ao atualizar estoque.', message: error.message });
         }
     }
 ];
@@ -71,11 +75,12 @@ exports.deleteEstoque = async (req, res) => {
         const estoque = await Estoque.findByPk(req.params.id);
         if (estoque) {
             await estoque.destroy();
-            res.status(204).json();
+            res.status(204).send(); // Enviar uma resposta sem conteúdo
         } else {
-            res.status(404).json({ error: 'Estoque não encontrado' });
+            res.status(404).json({ error: 'Estoque não encontrado.' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error('Erro ao deletar estoque:', error);
+        res.status(500).json({ error: 'Erro ao deletar estoque.', message: error.message });
     }
 };
