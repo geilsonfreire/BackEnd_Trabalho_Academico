@@ -1,7 +1,14 @@
 // Importar Bibliotecas
+// Configurações do dotenv
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan'); // Middleware para logging de requisições
+
+// Middleware para logging de requisições
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
+
 
 // Importar Routes
 const categoriaRoutes = require('./Routes/categoriaRoutes');
@@ -23,13 +30,9 @@ require('./config/db');
 // Inicializar o aplicativo Express
 const app = express();
 
-// Configurações do dotenv
-require('dotenv').config();
-
-
-
-// Middleware para logging de requisições
-app.use(morgan('dev'));
+// Middleware para logging de requisições para ambiente de dev e produçao
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev', { stream: accessLogStream }));
 
 // Configurações do CORS
 app.use(cors({

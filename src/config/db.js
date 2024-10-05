@@ -1,20 +1,44 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
+// Verificação das variáveis de ambiente
+if (!process.env.DB_DATABASE || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_HOST) {
+    throw new Error('Alguma variável de ambiente não foi definida. Verifique o arquivo .env');
+}
+
+// Configurações do Sequelize
+const dbConfig = {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    dialect: 'postgres',
+    define: {
+        timestamps: true,
+        underscored: true,
+    },
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+    },
+};
+
+// Instância do Sequelize
 const sequelize = new Sequelize(
-    process.env.DB_DATABASE,  // Nome do banco de dados
-    process.env.DB_USER,      // Usuário do banco de dados
-    process.env.DB_PASSWORD,  // Senha do banco de dados
-    {
-        host: process.env.DB_HOST,          // Host do banco de dados
-        port: process.env.DB_PORT,           // Porta do banco de dados
-        dialect: 'postgres',                // Tipo do banco de dados
-        define: {
-            timestamps: true,     // Habilita timestamps
-            underscored: true,    // Utiliza nomes de colunas com underscore
-        },
-    }
+    process.env.DB_DATABASE, 
+    process.env.DB_USER, 
+    process.env.DB_PASSWORD, 
+    dbConfig
 );
+
+
+sequelize.authenticate()
+    .then(() => {
+        console.log('Conexão com o banco de dados realizada com sucesso.');
+    })
+    .catch(err => {
+        console.error('Não foi possível conectar ao banco de dados:', err);
+    });
 
 // Exporta a instância do Sequelize e o SECRET
 module.exports = {
@@ -22,5 +46,4 @@ module.exports = {
     secret: process.env.SECRET
 };
 
-// Exporta a instância do Sequelize
-module.exports = sequelize;
+module.exports = sequelize 
