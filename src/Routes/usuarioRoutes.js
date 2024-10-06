@@ -1,14 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { createUsuario, getUsuarios, getUsuarioById, updateUsuario, deleteUsuario } = require('../controllers/usuarioController');
+const roleMiddleware = require('../middleware/roleMiddleware');
+const { 
+    createUsuario, 
+    getUsuarios, 
+    getUsuarioById, 
+    updateUsuario, 
+    deleteUsuario 
+} = require('../controllers/usuarioController');
 
-// Rota pública para criar um novo usuário
-router.post('/', createUsuario);
+// Rota protegida para gerenciar um novo usuário
+router.post('/', roleMiddleware('Administrador'), createUsuario);
+router.put('/:id', roleMiddleware('Administrador'), updateUsuario); 
+router.delete('/:id', roleMiddleware('Administrador'), deleteUsuario);
 
-// Rotas protegidas para outras operações de usuário no index.js
-router.get('/', getUsuarios); // Listar todos os usuários (opcional)
-router.get('/:id', getUsuarioById); // Obter um usuário por ID
-router.put('/:id', updateUsuario); // Atualizar um usuário por ID
-router.delete('/:id', deleteUsuario); // Deletar um usuário por ID
+// Rotas publicas
+router.get('/', getUsuarios);
+router.get('/:id', getUsuarioById); 
 
 module.exports = router;
