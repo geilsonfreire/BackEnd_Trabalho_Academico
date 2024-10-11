@@ -10,6 +10,9 @@ router.post('/:id_usuario/roles/:id_role', authMiddleware, roleMiddleware('Admin
 // Rota para obter todos os roles associados a um usuário - público
 router.get('/:id_usuario/roles', authMiddleware, usuarioRoleController.getRolesByUsuario);
 
+// Rota para obter todos os usuários e seus roles - apenas para Administrador (nova rota)
+router.get('/usuarios-roles', authMiddleware, roleMiddleware('Administrador'), usuarioRoleController.getUsuariosRoles);
+
 // Rota para remover a associação entre um usuário e um role - apenas para Administrador
 router.delete('/:id_usuario/roles/:id_role', authMiddleware, roleMiddleware('Administrador'), usuarioRoleController.deleteUsuarioRole);
 

@@ -39,6 +39,12 @@ exports.getRolesByUsuario = async (req, res) => {
     try {
         const roles = await UsuarioRole.findAll({
             where: { id_usuario: req.params.id_usuario },
+            include: [
+                {
+                    model: Role, // Inclui o modelo de Role
+                    attributes: ['id_role', 'nome'], // Adicione os campos que deseja retornar
+                },
+            ],
         });
 
         if (roles.length === 0) {
@@ -49,6 +55,33 @@ exports.getRolesByUsuario = async (req, res) => {
     } catch (error) {
         console.error('Erro ao obter roles do usuário:', error);
         res.status(500).json({ error: 'Erro ao obter roles do usuário.', message: error.message });
+    }
+};
+
+// Retorna todos os usuários e seus roles
+exports.getUsuariosRoles = async (req, res) => {
+    try {
+        const usuariosRoles = await UsuarioRole.findAll({
+            include: [
+                {
+                    model: Usuario,
+                    attributes: ['id_usuario', 'nome', 'email'], // Adicione os campos que deseja retornar
+                },
+                {
+                    model: Role,
+                    attributes: ['id_role', 'nome'], // Adicione os campos que deseja retornar
+                },
+            ],
+        });
+
+        if (usuariosRoles.length === 0) {
+            return res.status(404).json({ message: 'Nenhuma associação encontrada.' });
+        }
+
+        res.status(200).json(usuariosRoles);
+    } catch (error) {
+        console.error('Erro ao obter associações de usuários e roles:', error);
+        res.status(500).json({ error: 'Erro ao obter associações de usuários e roles.', message: error.message });
     }
 };
 
