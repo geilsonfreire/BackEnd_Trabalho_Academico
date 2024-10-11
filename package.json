@@ -11,7 +11,7 @@
         "dev": "nodemon src/app.js"
     },
     "keywords": [],
-    "author": "",
+    "author": "Geilson Freire",
     "license": "ISC",
     "description": "",
     "dependencies": {
