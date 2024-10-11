@@ -7,7 +7,7 @@
     },
     "scripts": {
         "test": "node src/app.js",
-        "start": "pm2 start src/app.js --name 'backend-app' --time",
+        "start": "pm2 start src/app.js --name backend-app --time",
         "dev": "nodemon src/app.js"
     },
     "keywords": [],
