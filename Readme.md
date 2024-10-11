@@ -144,3 +144,7 @@ http://localhost:3000/auth/login
   "emailOrUsername": "Yuri",
   "senha": "123456"
 }
+
+## Usuarios-Roles 
+ ### Metodos GET
+http://localhost:3000/api/usuarios-roles/1/roles
