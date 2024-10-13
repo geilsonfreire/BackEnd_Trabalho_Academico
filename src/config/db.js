@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 // Verificação das variáveis de ambiente
-if (!process.env.DB_DATABASE || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_HOST) {
+if (!process.env.DB_DATABASE || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_HOST || !process.env.SECRET) {
     throw new Error('Alguma variável de ambiente não foi definida. Verifique o arquivo .env');
 }
 
@@ -25,13 +25,13 @@ const dbConfig = {
 
 // Instância do Sequelize
 const sequelize = new Sequelize(
-    process.env.DB_DATABASE, 
-    process.env.DB_USER, 
-    process.env.DB_PASSWORD, 
+    process.env.DB_DATABASE,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
     dbConfig
 );
 
-
+// Testar a conexão
 sequelize.authenticate()
     .then(() => {
         console.log('Conexão com o banco de dados realizada com sucesso.');
@@ -40,10 +40,9 @@ sequelize.authenticate()
         console.error('Não foi possível conectar ao banco de dados:', err);
     });
 
-// Exporta a instância do Sequelize e o SECRET
+// Exporta a instância do Sequelize e a chave secreta
 module.exports = {
-    sequelize,
-    secret: process.env.SECRET
+    secret: process.env.SECRET  // Exportando a chave secreta
 };
 
-module.exports = sequelize 
+module.exports = sequelize

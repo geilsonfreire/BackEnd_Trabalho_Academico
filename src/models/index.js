@@ -1,5 +1,5 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Certifique-se de que o caminho está correto
+const sequelize = require('../config/db');  // Caminho corrigido para apontar para o arquivo `db.js`
+const { DataTypes } = require('sequelize');
 
 // Importando os modelos e passando as instâncias do Sequelize e DataTypes
 const Categoria = require('./categoria')(sequelize, DataTypes);
@@ -42,5 +42,4 @@ module.exports = {
     Role,
     UsuarioRole,
     sequelize,  // Exportando a instância do sequelize para usar em outros arquivos se necessário
-    Sequelize,  // Exportando o Sequelize caso precise em outro lugar
 };
