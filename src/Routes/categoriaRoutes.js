@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const categoriaController = require('../controllers/categoriaController');
-const { createCategoriaValidator, updateCategoriaValidator } = require('../validations/categoriaValidation');
+const { createCategoriaValidator, updateCategoriaValidator } = require('../Validations/categoriaValidation');
 const authMiddleware = require('../middleware/authMiddleware'); // Middleware de autenticação
 
 // Rota para criar uma nova categoria

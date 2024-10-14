@@ -18,4 +18,3 @@ exports.updateCategoriaValidator = [
         .isString().withMessage('Nome deve ser uma string.')
         .isLength({ max: 50 }).withMessage('Nome deve ter no máximo 50 caracteres.')
 ];
-
