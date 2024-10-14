@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
                 email: user.email,
                 roles
             },
-            process.env.SECRET,
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
@@ -79,7 +79,7 @@ exports.checkAuth = async (req, res) => {
             return res.status(401).json({ isAuthenticated: false });
 
         // Verificar se o token é válido
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return res.status(200).json({ isAuthenticated: true, decoded });
     } catch (error) {
         console.error('Erro ao verificar o token:', error);
@@ -96,7 +96,7 @@ exports.getUser = async (req, res) => {
             return res.status(401).json({ message: 'Token não encontrado' });
 
         // Verificar se o token é válido
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Obter as informações do usuário
         const user = await Usuario.findByPk(decoded.id_usuario, {

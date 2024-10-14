@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 // Verificação das variáveis de ambiente
-if (!process.env.DB_DATABASE || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_HOST || !process.env.SECRET) {
+if (!process.env.DB_DATABASE || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_HOST || !process.env.JWT_SECRET) {
     throw new Error('Alguma variável de ambiente não foi definida. Verifique o arquivo .env');
 }
 
@@ -42,7 +42,7 @@ sequelize.authenticate()
 
 // Exporta a instância do Sequelize e a chave secreta
 module.exports = {
-    secret: process.env.SECRET  // Exportando a chave secreta
+    jwt_secret: process.env.JWT_SECRET  // Exportando a chave secreta
 };
 
 module.exports = sequelize

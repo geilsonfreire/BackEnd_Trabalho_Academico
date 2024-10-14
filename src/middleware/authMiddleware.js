@@ -12,7 +12,7 @@ const authMiddleware = async (req, res, next) => {
 
     try {
         // Verifica e decodifica o token
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         // Busca o usuário no banco de dados
         const user = await Usuario.findByPk(decoded.id_usuario);
