@@ -3,11 +3,12 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 
 // Middleware para logging de requisições
 const morgan = require('morgan');
 const fs = require('fs');
-const path = require('path');
+
 
 
 // Importar Routes
@@ -43,6 +44,11 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Rota para servir o favicon
+app.get('/favicon.ico', (req, res) => {
+    res.sendFile(path.join(__dirname, 'assets', 'favicon.ico'));
+});
 
 // Rotas Publicas - Sem autenticação
 app.use('/api/auth', authRoutes); 
