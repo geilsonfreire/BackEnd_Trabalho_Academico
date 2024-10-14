@@ -1,3 +1,4 @@
+const pg = require('pg');
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
@@ -14,12 +15,6 @@ const dbConfig = {
     define: {
         timestamps: true,
         underscored: true,
-    },
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000,
     },
 };
 
