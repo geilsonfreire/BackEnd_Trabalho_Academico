@@ -31,6 +31,7 @@ const sequelize = new Sequelize(
     dbConfig
 );
 
+
 // Testar a conexão
 sequelize.authenticate()
     .then(() => {
@@ -42,7 +43,7 @@ sequelize.authenticate()
 
 // Exporta a instância do Sequelize e a chave secreta
 module.exports = {
-    jwt_secret: process.env.JWT_SECRET  // Exportando a chave secreta
+    jwt_secret: process.env.JWT_SECRET  
 };
 
 module.exports = sequelize
