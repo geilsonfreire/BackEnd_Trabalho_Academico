@@ -1,12 +1,8 @@
 // Importar Bibliotecas
-// Configurações do dotenv
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-
-// Middleware para logging de requisições
-const logger = require('./logger');
 
 
 
@@ -29,13 +25,6 @@ require('./config/db');
 
 // Inicializar o aplicativo Express
 const app = express();
-
-// Middleware para logging de requisições para ambiente de dev e produçao
-// Middleware para logging de requisições usando Winston
-app.use((req, res, next) => {
-    logger.info(`${req.method} ${req.url}`); // Log da requisição
-    next(); // Passa para o próximo middleware
-});
 
 // Configurações do CORS
 app.use(cors({
@@ -70,12 +59,11 @@ app.use('/api/usuarios-roles', authMiddleware, usuarioRoleRoutes);
 
 // Middleware para tratamento de erros
 app.use((err, req, res, next) => {
-    logger.error(err.stack); // Log de erros
     res.status(500).json({ message: 'Ocorreu um erro interno no servidor.', error: err.message });
 });
 
 // Iniciar o servidor
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    logger.info(`Servidor rodando na porta ${port}`);
+    console.log(`Servidor rodando na porta ${port}`);
 });
