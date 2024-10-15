@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-const authMiddleware = require('../middleware/authMiddleware'); // Certifique-se de que este middleware esteja implementado
+const authController = require('../controllers/authcontroller');
+const authMiddleware = require('../middleware/authMiddleware'); 
 
 // Rota para login
 router.post('/login', authController.login);
