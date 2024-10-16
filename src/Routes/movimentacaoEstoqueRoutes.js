@@ -9,8 +9,8 @@ router.get('/', movimentacaoEstoqueController.getMovimentacoesEstoque); // Lista
 router.get('/:id', movimentacaoEstoqueController.getMovimentacaoEstoqueById); // Obter movimentação de estoque por ID
 
 // Ações que modificam (restritas a usuários autenticados e com permissões)
-router.post('/', authMiddleware, roleMiddleware('Adminiistradir'), movimentacaoEstoqueController.createMovimentacaoEstoque); // Criar movimentação de estoque (apenas Adminiistradir)
-router.put('/:id', authMiddleware, roleMiddleware('Adminiistradir'), movimentacaoEstoqueController.updateMovimentacaoEstoque); // Atualizar movimentação de estoque (apenas Adminiistradir)
-router.delete('/:id', authMiddleware, roleMiddleware('Adminiistradir'), movimentacaoEstoqueController.deleteMovimentacaoEstoque); // Excluir movimentação de estoque (apenas Adminiistradir)
+router.post('/', authMiddleware, roleMiddleware('Administrador'), movimentacaoEstoqueController.createMovimentacaoEstoque); // Criar movimentação de estoque (apenas Administrador)
+router.put('/:id', authMiddleware, roleMiddleware('Administrador'), movimentacaoEstoqueController.updateMovimentacaoEstoque); // Atualizar movimentação de estoque (apenas Administrador)
+router.delete('/:id', authMiddleware, roleMiddleware('Administrador'), movimentacaoEstoqueController.deleteMovimentacaoEstoque); // Excluir movimentação de estoque (apenas Administrador)
 
 module.exports = router;

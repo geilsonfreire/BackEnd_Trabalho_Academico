@@ -5,6 +5,8 @@ const movimentacaoEstoqueValidation = require('../validations/movimentacaoEstoqu
 exports.createMovimentacaoEstoque = [
     movimentacaoEstoqueValidation,
     async (req, res) => {
+        console.log('Requisição para criar movimentação de estoque:', req.body);
+        console.log('Usuário:', req.user); // Log do usuário autenticado
         try {
             // Verificar se há erros de validação
             const errors = validationResult(req);
