@@ -95,9 +95,9 @@ http://localhost:3000/api/usuarios
 - Header: key: Content-Type  value: application/json <br>
 - body: 
 {
-  "nome": "Henrique",
-  "email": "henrique@example.com",
-  "senha": "senhaSegura123",
+  "nome": "Geilson",
+  "email": "geilson@example.com",
+  "senha": "123456",
   "status": true,
   "id_role": 1
 }
@@ -137,11 +137,11 @@ http://localhost:3000/roles/:id - RETORNA APENAS O VALOR RELACIONADO AO ID <br>
 
 ## autenticaçao de Usuarios 
  ### Metodos POST 
-http://localhost:3000/auth/login
+http://localhost:3000/api/auth/login
 - Header: key: Content-Type  value: application/json <br>
 - body: 
 {
-  "emailOrUsername": "Yuri",
+  "emailOrUsername": "Geilson",
   "senha": "123456"
 }
 
