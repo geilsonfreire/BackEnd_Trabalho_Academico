@@ -116,3 +116,43 @@ exports.deleteUsuarioRole = [
         }
     }
 ];
+
+// Atualiza a associação entre um usuário e um role
+exports.updateUsuarioRole = [
+    usuarioRoleValidation,
+    async (req, res) => {
+        try {
+            // Verificar se há erros de validação
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+
+            const { id_usuario, id_role, novo_id_role } = req.body;
+
+            // Verificar se a associação atual existe
+            const usuarioRole = await UsuarioRole.findOne({
+                where: { id_usuario, id_role },
+            });
+
+            if (!usuarioRole) {
+                return res.status(404).json({ error: 'Relação de usuário e role não encontrada.' });
+            }
+
+            // Verificar se o novo role existe
+            const novoRole = await Role.findByPk(novo_id_role);
+            if (!novoRole) {
+                return res.status(404).json({ error: 'Novo role não encontrado.' });
+            }
+
+            // Atualizar a associação
+            usuarioRole.id_role = novo_id_role;
+            await usuarioRole.save();
+
+            res.status(200).json(usuarioRole);
+        } catch (error) {
+            console.error('Erro ao atualizar associação:', error);
+            res.status(500).json({ error: 'Erro ao atualizar associação.', message: error.message });
+        }
+    }
+];
