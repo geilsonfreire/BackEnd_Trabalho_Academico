@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const roleMiddleware = require('../middleware/roleMiddleware');
-const authMiddleware = require('../middleware/authMiddleware'); 
 const { 
     createUsuario, 
     getUsuarios, 
@@ -11,12 +10,12 @@ const {
 } = require('../controllers/usuarioController');
 
 // Rota protegida para gerenciar um novo usuário
-router.post('/', authMiddleware, roleMiddleware('Administrador'), createUsuario);
-router.put('/:id', authMiddleware, roleMiddleware('Administrador'), updateUsuario); 
-router.delete('/:id', authMiddleware, roleMiddleware('Administrador'), deleteUsuario);
+router.post('/', roleMiddleware('Administrador'), createUsuario);
+router.put('/:id', roleMiddleware('Administrador'), updateUsuario); 
+router.delete('/:id', roleMiddleware('Administrador'), deleteUsuario);
 
-// Rotas de leitura (acessíveis publicamente)
-router.get('/', authMiddleware, getUsuarios);
-router.get('/:id', authMiddleware, getUsuarioById); 
+// Rotas publicas
+router.get('/', getUsuarios);
+router.get('/:id', getUsuarioById); 
 
 module.exports = router;
